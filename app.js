@@ -28,10 +28,19 @@ app.get('/', (req, res) => {
   res.render('home');
 })
 
+// Display all accommodations
 app.get('/accommodations', async(req, res) => {
   const accommodations = await Accommodation.find({});
   res.render('accommodations/index', { accommodations });
 })
+
+// Details for one specific accommodation
+app.get('/accommodations/:id', async (req, res) => {
+  const accommodation = await Accommodation.findById(req.params.id)
+  res.render('accommodations/show', { accommodation });
+})
+
+
 
 
 

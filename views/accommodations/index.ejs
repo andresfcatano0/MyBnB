@@ -9,7 +9,7 @@
   <h1>All Accommodations!</h1>
   <ul>
     <% for (let accommodation of accommodations) { %>
-      <li> <a href=""> <%= accommodation.title %> </a> </li>
+      <li> <a href="/accommodations/<%= accommodation._id %>"> <%= accommodation.title %> </a> </li>
     <% } %>
   </ul>
 </body>
