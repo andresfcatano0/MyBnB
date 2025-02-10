@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyBnB</title>
+</head>
+<body>
+  <form action="/accommodations" method="POST">
+    <div>
+      <label for="title">Title</label>
+      <input type="text" id="title" name="accommodation[title]">
+    </div>
+    <div>
+      <label for="location">Location</label>
+      <input type="text" id="location" name="accommodation[location]">
+    </div>
+    <button>Add Accommodation</button>
+  </form>
+  <a href="/accommodations">All Accommodations</a>
+</body>
+</html>

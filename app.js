@@ -29,10 +29,24 @@ app.get('/', (req, res) => {
 })
 
 // Display all accommodations
-app.get('/accommodations', async(req, res) => {
+app.get('/accommodations', async (req, res) => {
   const accommodations = await Accommodation.find({});
   res.render('accommodations/index', { accommodations });
 })
+
+// ********* BELOW 2 ROUTES WORK TOGETHER
+// Form to create new products
+app.get('/accommodations/new', (req, res) => {
+  res.render('accommodations/new');
+})
+
+// Creates new products on server
+app.post('/accommodations', async (req, res) => {
+  const newAccommodation = new Accommodation(req.body.accommodation);
+  await newAccommodation.save();
+  res.redirect(`/accommodations/${newAccommodation._id}`);
+})
+// ********* ABOVE 2 ROUTES WORK TOGETHER
 
 // Details for one specific accommodation
 app.get('/accommodations/:id', async (req, res) => {

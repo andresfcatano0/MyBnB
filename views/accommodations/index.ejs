@@ -7,6 +7,9 @@
 </head>
 <body>
   <h1>All Accommodations!</h1>
+  <div>
+    <a href="/accommodations/new">Add Accommodation</a>
+  </div>
   <ul>
     <% for (let accommodation of accommodations) { %>
       <li> <a href="/accommodations/<%= accommodation._id %>"> <%= accommodation.title %> </a> </li>
