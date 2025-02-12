@@ -35,12 +35,12 @@ app.get('/accommodations', async (req, res) => {
 })
 
 // ********* BELOW 2 ROUTES WORK TOGETHER
-// Form to create new products
+// Form to create new accommodations
 app.get('/accommodations/new', (req, res) => {
   res.render('accommodations/new');
 })
 
-// Creates new products on server
+// Creates new accommodations on server
 app.post('/accommodations', async (req, res) => {
   const newAccommodation = new Accommodation(req.body.accommodation);
   await newAccommodation.save();
@@ -50,11 +50,24 @@ app.post('/accommodations', async (req, res) => {
 
 // Details for one specific accommodation
 app.get('/accommodations/:id', async (req, res) => {
-  const accommodation = await Accommodation.findById(req.params.id)
+  const accommodation = await Accommodation.findById(req.params.id);
   res.render('accommodations/show', { accommodation });
 })
 
+// ********* BELOW 2 ROUTES WORK TOGETHER
+// Form to edit specific product
+app.get('/accommodations/:id/edit', async (req, res) => {
+  const foundAccommodation = await Accommodation.findById(req.params.id);
+  res.render('accommodations/edit', { foundAccommodation });
+})
 
+// Updates specific product on server
+app.put('/accommodations/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.foundAccommodation });
+  res.redirect(`/accommodations/${updatedAccommodation._id}`)
+})
+// ********* ABOVE 2 ROUTES WORK TOGETHER
 
 
 
