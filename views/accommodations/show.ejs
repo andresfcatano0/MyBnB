@@ -11,6 +11,11 @@
   <p>
     <a href="/accommodations/<%= accommodation._id %>/edit">Edit</a>
   </p>
+  <p>
+    <form action="/accommodations/<%= accommodation._id %>?_method=DELETE" method="POST">
+      <button>Delete</button>
+    </form>
+  </p>
   <footer><a href="/accommodations">All Accommodations</a></footer>
 </body>
 </html>

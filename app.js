@@ -55,13 +55,13 @@ app.get('/accommodations/:id', async (req, res) => {
 })
 
 // ********* BELOW 2 ROUTES WORK TOGETHER
-// Form to edit specific product
+// Form to edit specific accommodation
 app.get('/accommodations/:id/edit', async (req, res) => {
   const foundAccommodation = await Accommodation.findById(req.params.id);
   res.render('accommodations/edit', { foundAccommodation });
 })
 
-// Updates specific product on server
+// Updates specific accommodation on server
 app.put('/accommodations/:id', async (req, res) => {
   const { id } = req.params;
   const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.foundAccommodation });
@@ -69,9 +69,12 @@ app.put('/accommodations/:id', async (req, res) => {
 })
 // ********* ABOVE 2 ROUTES WORK TOGETHER
 
-
-
-
+// Deletes specific accommodation on server
+app.delete('/accommodations/:id', async (req, res) => {
+  const { id } = req.params;
+  await Accommodation.findByIdAndDelete(id);
+  res.redirect('/accommodations');
+})
 
 app.listen(3000, () => {
   console.log('Serving on port 3000')
