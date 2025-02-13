@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyBnB</title>
-</head>
-<body>
+<% layout('layouts/boilerplate') %>
   <h1>Edit Accommodation</h1>
   <form action="/accommodations/<%= foundAccommodation._id %>?_method=PUT" method="POST">
     <div>
@@ -19,5 +12,3 @@
     <button>Update Accommodation</button>
   </form>
   <a href="/accommodations/<%= foundAccommodation._id %>">Back To Accommodation</a>
-</body>
-</html>

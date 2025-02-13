@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyBnB</title>
-</head>
-<body>
+<% layout('layouts/boilerplate') %>
   <h1><%= accommodation.title %></h1>
   <h2><%= accommodation.location %></h2>
   <p>
@@ -16,6 +9,6 @@
       <button>Delete</button>
     </form>
   </p>
-  <footer><a href="/accommodations">All Accommodations</a></footer>
-</body>
-</html>
+  <footer>
+    <a href="/accommodations">All Accommodations</a>
+  </footer>
