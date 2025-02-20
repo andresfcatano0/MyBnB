@@ -16,11 +16,15 @@ const sample = array => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
   await Accommodation.deleteMany({});
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 20; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
+    const price = Math.floor(Math.random() * 20) + 10;
     const accommodation = new Accommodation({
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
-      title: `${sample(descriptors)} ${sample(places)}`
+      title: `${sample(descriptors)} ${sample(places)}`,
+      image: `https://picsum.photos/400?random=${Math.random()}`,
+      description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloribus vero laboriosam sint quisquam adipisci veritatis minus architecto. Laudantium voluptates veniam culpa enim quaerat recusandae consectetur ea soluta! Ipsam, iure quas.",
+      price
     });
     await accommodation.save();
   }
