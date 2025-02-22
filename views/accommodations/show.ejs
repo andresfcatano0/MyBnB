@@ -1,16 +1,25 @@
 <% layout('layouts/boilerplate') %>
-  <h1><%= accommodation.title %></h1>
-  <h2><%= accommodation.location %></h2>
-  <img src="<%= accommodation.image %>" alt="">
-  <p><%= accommodation.description %></p>
-  <p>
-    <a href="/accommodations/<%= accommodation._id %>/edit">Edit</a>
-  </p>
-  <p>
-    <form action="/accommodations/<%= accommodation._id %>?_method=DELETE" method="POST">
-      <button>Delete</button>
-    </form>
-  </p>
-  <footer>
-    <a href="/accommodations">All Accommodations</a>
-  </footer>
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card mb-3">
+      <img src="<%= accommodation.image %>" class="card-img-top" alt="">
+      <div class="card-body">
+        <h5 class="card-title"><%= accommodation.title %></h5>
+        <p class="card-text"><%= accommodation.description %></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted"><%= accommodation.location %></li>
+        <li class="list-group-item">$<%= accommodation.price %>/night</li>
+      </ul>
+      <div class="card-body"> 
+        <a class="card-link btn btn-info" href="/accommodations/<%= accommodation._id %>/edit">Edit</a>
+        <form class="d-inline" action="/accommodations/<%= accommodation._id %>?_method=DELETE" method="POST">
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+      <div class="card-footer text-muted">
+        2 days ago
+      </div>
+    </div>
+  </div>
+</div>
