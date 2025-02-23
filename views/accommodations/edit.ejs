@@ -2,29 +2,39 @@
 <div class="row">
   <h1 class="text-center">Edit Accommodation</h1>
   <div class="col-6 offset-3">
-    <form action="/accommodations/<%= foundAccommodation._id %>?_method=PUT" method="POST">
+    <form action="/accommodations/<%= foundAccommodation._id %>?_method=PUT" method="POST" novalidate class="validated-form">
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
-        <input class="form-control" type="text" id="title" name="foundAccommodation[title]" value="<%= foundAccommodation.title %>">
+        <input class="form-control" type="text" id="title" name="foundAccommodation[title]" value="<%= foundAccommodation.title %>" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation title</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="location">Location</label>
-        <input class="form-control" type="text" id="location" name="foundAccommodation[location]" value="<%= foundAccommodation.location %>">
+        <input class="form-control" type="text" id="location" name="foundAccommodation[location]" value="<%= foundAccommodation.location %>" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation location</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="image">Image URL</label>
-        <input class="form-control" type="text" id="image" name="foundAccommodation[image]" value="<%= foundAccommodation.image %>">
+        <input class="form-control" type="text" id="image" name="foundAccommodation[image]" value="<%= foundAccommodation.image %>" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation image</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="price">Accommodation Price</label>
         <div class="input-group">
           <span class="input-group-text" id="price-label">$</span>
-          <input class="form-control" type="number" id="price" name="foundAccommodation[price]" value="<%= foundAccommodation.price %>" placeholder="0.00" aria-label="price" aria-describedby="price-label">
+          <input class="form-control" type="number" id="price" name="foundAccommodation[price]" value="<%= foundAccommodation.price %>" placeholder="0.00" aria-label="price" aria-describedby="price-label" required>
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please choose an accommodation price</div>
         </div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
-        <textarea class="form-control" type="text" id="description" name="foundAccommodation[description]"><%= foundAccommodation.description %></textarea>
+        <textarea class="form-control" type="text" id="description" name="foundAccommodation[description]" required><%= foundAccommodation.description %></textarea>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation description</div>
       </div>
       <div class="mb-3">
         <button class="btn btn-success">Update Accommodation</button>
