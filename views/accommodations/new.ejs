@@ -2,29 +2,39 @@
 <div class="row">
   <h1 class="text-center">New Accommodation</h1>
   <div class="col-6 offset-3">
-    <form action="/accommodations" method="POST">
+    <form action="/accommodations" method="POST" novalidate class="validated-form">
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
-        <input class="form-control" type="text" id="title" name="accommodation[title]">
+        <input class="form-control" type="text" id="title" name="accommodation[title]" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation title</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="location">Location</label>
-        <input class="form-control" type="text" id="location" name="accommodation[location]">
+        <input class="form-control" type="text" id="location" name="accommodation[location]" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation location</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="image">Image URL</label>
-        <input class="form-control" type="text" id="image" name="accommodation[image]">
+        <input class="form-control" type="text" id="image" name="accommodation[image]" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation image</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="price">Accommodation Price</label>
         <div class="input-group">
           <span class="input-group-text" id="price-label">$</span>
-          <input class="form-control" type="number" id="price" name="accommodation[price]" placeholder="0.00" aria-label="price" aria-describedby="price-label">
+          <input class="form-control" type="number" id="price" name="accommodation[price]" required placeholder="0.00" aria-label="price" aria-describedby="price-label">
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Please choose an accommodation price</div>
         </div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
-        <textarea class="form-control" type="text" id="description" name="accommodation[description]"></textarea>
+        <textarea class="form-control" type="text" id="description" name="accommodation[description]" required></textarea>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please choose an accommodation description</div>
       </div>
       <div class="mb-3">
         <button class="btn btn-success">Add Accommodation</button>
