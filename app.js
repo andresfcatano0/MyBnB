@@ -4,7 +4,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
-
+const catchAsync = require("./utils/catchAsync");
 
 const Accommodation = require("./models/accommodation");
 
@@ -29,10 +29,10 @@ app.get('/', (req, res) => {
 })
 
 // Display all accommodations
-app.get('/accommodations', async (req, res) => {
+app.get('/accommodations', catchAsync(async (req, res) => {
   const accommodations = await Accommodation.find({});
   res.render('accommodations/index', { accommodations });
-})
+}))
 
 // ********* BELOW 2 ROUTES WORK TOGETHER
 // Form to create new accommodations
@@ -41,39 +41,43 @@ app.get('/accommodations/new', (req, res) => {
 })
 
 // Creates new accommodations on server
-app.post('/accommodations', async (req, res) => {
+app.post('/accommodations', catchAsync(async (req, res) => {
   const newAccommodation = new Accommodation(req.body.accommodation);
   await newAccommodation.save();
   res.redirect(`/accommodations/${newAccommodation._id}`);
-})
+}))
 // ********* ABOVE 2 ROUTES WORK TOGETHER
 
 // Details for one specific accommodation
-app.get('/accommodations/:id', async (req, res) => {
+app.get('/accommodations/:id', catchAsync(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id);
   res.render('accommodations/show', { accommodation });
-})
+}))
 
 // ********* BELOW 2 ROUTES WORK TOGETHER
 // Form to edit specific accommodation
-app.get('/accommodations/:id/edit', async (req, res) => {
+app.get('/accommodations/:id/edit', catchAsync(async (req, res) => {
   const foundAccommodation = await Accommodation.findById(req.params.id);
   res.render('accommodations/edit', { foundAccommodation });
-})
+}))
 
 // Updates specific accommodation on server
-app.put('/accommodations/:id', async (req, res) => {
+app.put('/accommodations/:id', catchAsync(async (req, res) => {
   const { id } = req.params;
   const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.foundAccommodation });
   res.redirect(`/accommodations/${updatedAccommodation._id}`)
-})
+}))
 // ********* ABOVE 2 ROUTES WORK TOGETHER
 
 // Deletes specific accommodation on server
-app.delete('/accommodations/:id', async (req, res) => {
+app.delete('/accommodations/:id', catchAsync(async (req, res) => {
   const { id } = req.params;
   await Accommodation.findByIdAndDelete(id);
   res.redirect('/accommodations');
+}))
+
+app.use((err, req, res, next) => {
+  res.send("SOMETHING WENT WRONG :( ");
 })
 
 app.listen(3000, () => {
