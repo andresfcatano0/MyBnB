@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
+const ExpressError = require("./utils/ExpressError");
 
 const Accommodation = require("./models/accommodation");
 
@@ -42,6 +43,7 @@ app.get('/accommodations/new', (req, res) => {
 
 // Creates new accommodations on server
 app.post('/accommodations', catchAsync(async (req, res) => {
+  if (!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
   const newAccommodation = new Accommodation(req.body.accommodation);
   await newAccommodation.save();
   res.redirect(`/accommodations/${newAccommodation._id}`);
@@ -75,6 +77,16 @@ app.delete('/accommodations/:id', catchAsync(async (req, res) => {
   await Accommodation.findByIdAndDelete(id);
   res.redirect('/accommodations');
 }))
+
+app.all('*', (req, res, next) => {
+  next(new ExpressError('Page Not Found', 404))
+})
+
+app.use((err, req, res, next) => {
+  const { statusCode = 500 } = err;
+  if(!err.message) err.message = "SOMETHING WENT WRONG";
+  res.status(statusCode).render('error', { err });
+})
 
 app.use((err, req, res, next) => {
   res.send("SOMETHING WENT WRONG :( ");
