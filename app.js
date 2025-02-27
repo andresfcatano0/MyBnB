@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
+const Joi = require('joi');
 
 const Accommodation = require("./models/accommodation");
 
