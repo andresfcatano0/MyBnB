@@ -44,7 +44,23 @@ app.get('/accommodations/new', (req, res) => {
 
 // Creates new accommodations on server
 app.post('/accommodations', catchAsync(async (req, res) => {
-  if (!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
+  // if (!req.body.accommodation) throw new ExpressError('Invalid Accommodation Data', 400);
+ 
+  const accommodationSchema = Joi.object({
+    accommodation: Joi.object({
+      title: Joi.string().required(),
+      price: Joi.number().required().min(0),
+      image: Joi.string().required(),
+      location: Joi.string().required(),
+      description: Joi.string().required()
+    }).required()
+  })
+  const { error } = accommodationSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map(el => el.message).join(',');
+    throw new ExpressError(msg, 400 )
+  }
+   
   const newAccommodation = new Accommodation(req.body.accommodation);
   await newAccommodation.save();
   res.redirect(`/accommodations/${newAccommodation._id}`);
@@ -87,10 +103,6 @@ app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   if(!err.message) err.message = "SOMETHING WENT WRONG";
   res.status(statusCode).render('error', { err });
-})
-
-app.use((err, req, res, next) => {
-  res.send("SOMETHING WENT WRONG :( ");
 })
 
 app.listen(3000, () => {
