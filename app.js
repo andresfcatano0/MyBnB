@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
-const Joi = require('joi');
+const { accommodationSchema } = require("./joiSchemas.js");
 
 const Accommodation = require("./models/accommodation");
 
@@ -26,6 +26,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+const validateAccommodation = (req, res, next) => {
+  const { error } = accommodationSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map(el => el.message).join(',');
+    throw new ExpressError(msg, 400 )
+  } else {
+    next();
+  }
+}
+
 app.get('/', (req, res) => {
   res.render('home');
 })
@@ -43,24 +53,8 @@ app.get('/accommodations/new', (req, res) => {
 })
 
 // Creates new accommodations on server
-app.post('/accommodations', catchAsync(async (req, res) => {
-  // if (!req.body.accommodation) throw new ExpressError('Invalid Accommodation Data', 400);
- 
-  const accommodationSchema = Joi.object({
-    accommodation: Joi.object({
-      title: Joi.string().required(),
-      price: Joi.number().required().min(0),
-      image: Joi.string().required(),
-      location: Joi.string().required(),
-      description: Joi.string().required()
-    }).required()
-  })
-  const { error } = accommodationSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map(el => el.message).join(',');
-    throw new ExpressError(msg, 400 )
-  }
-   
+app.post('/accommodations', validateAccommodation, catchAsync(async (req, res) => {
+  // if (!req.body.accommodation) throw new ExpressError('Invalid Accommodation Data', 400);   
   const newAccommodation = new Accommodation(req.body.accommodation);
   await newAccommodation.save();
   res.redirect(`/accommodations/${newAccommodation._id}`);
@@ -76,14 +70,14 @@ app.get('/accommodations/:id', catchAsync(async (req, res) => {
 // ********* BELOW 2 ROUTES WORK TOGETHER
 // Form to edit specific accommodation
 app.get('/accommodations/:id/edit', catchAsync(async (req, res) => {
-  const foundAccommodation = await Accommodation.findById(req.params.id);
-  res.render('accommodations/edit', { foundAccommodation });
+  const accommodation = await Accommodation.findById(req.params.id);
+  res.render('accommodations/edit', { accommodation });
 }))
 
 // Updates specific accommodation on server
-app.put('/accommodations/:id', catchAsync(async (req, res) => {
+app.put('/accommodations/:id', validateAccommodation, catchAsync(async (req, res) => {
   const { id } = req.params;
-  const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.foundAccommodation });
+  const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.accommodation });
   res.redirect(`/accommodations/${updatedAccommodation._id}`)
 }))
 // ********* ABOVE 2 ROUTES WORK TOGETHER
