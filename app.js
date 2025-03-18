@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
-const { accommodationSchema } = require("./joiSchemas.js");
+const { accommodationSchema, reviewSchema } = require("./joiSchemas.js");
 
 const Accommodation = require("./models/accommodation");
 const Review = require("./models/review");
@@ -29,6 +29,16 @@ app.use(methodOverride("_method"));
 
 const validateAccommodation = (req, res, next) => {
   const { error } = accommodationSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map(el => el.message).join(',');
+    throw new ExpressError(msg, 400 )
+  } else {
+    next();
+  }
+}
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
     const msg = error.details.map(el => el.message).join(',');
     throw new ExpressError(msg, 400 )
@@ -91,13 +101,13 @@ app.delete('/accommodations/:id', catchAsync(async (req, res) => {
 }))
 
 // Creates new review on server
-app.post('/accommodations/:id/reviews', catchAsync(async (req, res) => {
+app.post('/accommodations/:id/reviews', validateReview, catchAsync(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id);
   const review = new Review(req.body.review);
-  console.log("accommodation:" + accommodation)
-  console.log("review:" + review)
-  console.log("ANDRES-2 " + JSON.stringify(req.params, null, 2));
-  console.log("CATANO-2 " + JSON.stringify(req.body, null, 2));
+  // console.log("accommodation:" + accommodation)
+  // console.log("review:" + review)
+  // console.log("ANDRES-2 " + JSON.stringify(req.params, null, 2));
+  // console.log("CATANO-2 " + JSON.stringify(req.body, null, 2));
   // Push onto accommodation model reviews 
   accommodation.reviews.push(review);
   await review.save();
