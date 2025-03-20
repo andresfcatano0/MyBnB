@@ -74,7 +74,7 @@ app.post('/accommodations', validateAccommodation, catchAsync(async (req, res) =
 
 // Details for one specific accommodation
 app.get('/accommodations/:id', catchAsync(async (req, res) => {
-  const accommodation = await Accommodation.findById(req.params.id);
+  const accommodation = await Accommodation.findById(req.params.id).populate('reviews');
   res.render('accommodations/show', { accommodation });
 }))
 
