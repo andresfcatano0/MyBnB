@@ -104,15 +104,23 @@ app.delete('/accommodations/:id', catchAsync(async (req, res) => {
 app.post('/accommodations/:id/reviews', validateReview, catchAsync(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id);
   const review = new Review(req.body.review);
-  // console.log("accommodation:" + accommodation)
-  // console.log("review:" + review)
-  // console.log("ANDRES-2 " + JSON.stringify(req.params, null, 2));
-  // console.log("CATANO-2 " + JSON.stringify(req.body, null, 2));
+  // console.log("ACCOMMODATION:" + accommodation)
+  // console.log("REVIEW:" + review)
+  // console.log("REQ.PARAMS " + JSON.stringify(req.params, null, 2));
+  // console.log("REQ.BOODY " + JSON.stringify(req.body, null, 2));
   // Push onto accommodation model reviews 
   accommodation.reviews.push(review);
   await review.save();
   await accommodation.save();
   res.redirect(`/accommodations/${accommodation._id}`);
+}))
+
+app.delete('/accommodations/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+  const { id, reviewId } = req.params;
+  // $pull - mongo operator to remove reference to specific review from an accommodation
+  await Accommodation.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+  await Review.findByIdAndDelete(reviewId);
+  res.redirect(`/accommodations/${id}`);
 }))
 
 app.all('*', (req, res, next) => {
