@@ -28,6 +28,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+// For express router
 app.use('/accommodations', accommodations);
 app.use('/accommodations/:id/reviews', reviews);
 
