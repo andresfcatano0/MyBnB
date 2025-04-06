@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
+const session = require("express-session");
 
 const accommodations = require("./routes/accommodations");
 const reviews = require("./routes/reviews");
