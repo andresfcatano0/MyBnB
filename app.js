@@ -30,7 +30,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// For express router
+// Flash depends on Session
+const sessionConfing = {
+  secret: 'elgransecreto!',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  }
+}
+app.use(session(sessionConfing));
+
+// For Express Router
 app.use('/accommodations', accommodations);
 app.use('/accommodations/:id/reviews', reviews);
 
