@@ -32,6 +32,7 @@ router.post('/', validateAccommodation, catchAsync(async (req, res) => {
   // if (!req.body.accommodation) throw new ExpressError('Invalid Accommodation Data', 400);   
   const newAccommodation = new Accommodation(req.body.accommodation);
   await newAccommodation.save();
+  req.flash('success', 'Successfully created an accommodation!');
   res.redirect(`/accommodations/${newAccommodation._id}`);
 }))
 // ********* ABOVE 2 ROUTES WORK TOGETHER
@@ -53,6 +54,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 router.put('/:id', validateAccommodation, catchAsync(async (req, res) => {
   const { id } = req.params;
   const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.accommodation });
+  req.flash('success', 'Successfully updated accommodation!');
   res.redirect(`/accommodations/${updatedAccommodation._id}`)
 }))
 // ********* ABOVE 2 ROUTES WORK TOGETHER
@@ -61,6 +63,7 @@ router.put('/:id', validateAccommodation, catchAsync(async (req, res) => {
 router.delete('/:id', catchAsync(async (req, res) => {
   const { id } = req.params;
   await Accommodation.findByIdAndDelete(id);
+  req.flash('success', 'Successfully deleted accommodation!');
   res.redirect('/accommodations');
 }))
 

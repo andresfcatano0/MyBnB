@@ -24,6 +24,7 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
   accommodation.reviews.push(review);
   await review.save();
   await accommodation.save();
+  req.flash('success', 'Created new review!');
   res.redirect(`/accommodations/${accommodation._id}`);
 }))
 
@@ -32,6 +33,7 @@ router.delete('/:reviewId', catchAsync(async (req, res) => {
   // $pull - mongo operator to remove reference to specific review from an accommodation
   await Accommodation.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
   await Review.findByIdAndDelete(reviewId);
+  req.flash('success', 'Deleted review!');
   res.redirect(`/accommodations/${id}`);
 }))
 
