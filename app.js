@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 const accommodations = require("./routes/accommodations");
 const reviews = require("./routes/reviews");
@@ -42,6 +43,14 @@ const sessionConfing = {
   }
 }
 app.use(session(sessionConfing));
+app.use(flash());
+
+app.use((req, res, next) => {
+  // Automatic access to res.locals.success without having to pass it 
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+})
 
 // For Express Router
 app.use('/accommodations', accommodations);
