@@ -40,6 +40,10 @@ router.post('/', validateAccommodation, catchAsync(async (req, res) => {
 // Details for one specific accommodation
 router.get('/:id', catchAsync(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id).populate('reviews');
+  if (!accommodation) {
+    req.flash('error', 'Cannot find that accommodation!');
+    return res.redirect('/accommodations');
+  }
   res.render('accommodations/show', { accommodation });
 }))
 
