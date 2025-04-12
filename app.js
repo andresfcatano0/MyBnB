@@ -7,9 +7,13 @@ const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
-const accommodations = require("./routes/accommodations");
-const reviews = require("./routes/reviews");
+const userRoutes = require("./routes/users");
+const accommodationRoutes = require("./routes/accommodations");
+const reviewRoutes = require("./routes/reviews");
 
 const Accommodation = require("./models/accommodation");
 const Review = require("./models/review");
@@ -45,6 +49,14 @@ const sessionConfing = {
 app.use(session(sessionConfing));
 app.use(flash());
 
+// Session() has to be used before passport.session() 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
   // Automatic access to res.locals.success without having to pass it 
   res.locals.success = req.flash('success');
@@ -53,8 +65,9 @@ app.use((req, res, next) => {
 })
 
 // For Express Router
-app.use('/accommodations', accommodations);
-app.use('/accommodations/:id/reviews', reviews);
+app.use('/', userRoutes);
+app.use('/accommodations', accommodationRoutes);
+app.use('/accommodations/:id/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
   res.render('home');
