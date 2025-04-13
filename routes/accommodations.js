@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
 const { accommodationSchema } = require("../joiSchemas.js");
+const { isLoggedIn } = require("../middleware");
+
 const ExpressError = require("../utils/ExpressError");
 const Accommodation = require("../models/accommodation");
 
@@ -23,12 +25,12 @@ router.get('/', catchAsync(async (req, res) => {
 
 // ********* BELOW 2 ROUTES WORK TOGETHER
 // Form to create new accommodations
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
   res.render('accommodations/new');
 })
 
 // Creates new accommodations on server
-router.post('/', validateAccommodation, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateAccommodation, catchAsync(async (req, res) => {
   // if (!req.body.accommodation) throw new ExpressError('Invalid Accommodation Data', 400);   
   const newAccommodation = new Accommodation(req.body.accommodation);
   await newAccommodation.save();
@@ -49,13 +51,17 @@ router.get('/:id', catchAsync(async (req, res) => {
 
 // ********* BELOW 2 ROUTES WORK TOGETHER
 // Form to edit specific accommodation
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id);
+  if (!accommodation) {
+    req.flash('error', 'Cannot find that accommodation!');
+    return res.redirect('/accommodations');
+  }
   res.render('accommodations/edit', { accommodation });
 }))
 
 // Updates specific accommodation on server
-router.put('/:id', validateAccommodation, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, validateAccommodation, catchAsync(async (req, res) => {
   const { id } = req.params;
   const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.accommodation });
   req.flash('success', 'Successfully updated accommodation!');
@@ -64,7 +70,7 @@ router.put('/:id', validateAccommodation, catchAsync(async (req, res) => {
 // ********* ABOVE 2 ROUTES WORK TOGETHER
 
 // Deletes specific accommodation on server
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
   const { id } = req.params;
   await Accommodation.findByIdAndDelete(id);
   req.flash('success', 'Successfully deleted accommodation!');
