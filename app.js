@@ -58,7 +58,13 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  // Automatic access to res.locals.success without having to pass it 
+  // res.locals is an object that makes variables available to templates.
+  // Access to these in every template. Access is global. 
+  // Good way to pass data like messages, user info. 
+  // Available only for the current response.
+  // user in req.user comes from passport
+  // console.log("REQ.USER", req.user)
+  res.locals.currentUser = req.user; 
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
