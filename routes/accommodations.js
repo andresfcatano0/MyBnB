@@ -33,6 +33,8 @@ router.get('/new', isLoggedIn, (req, res) => {
 router.post('/', isLoggedIn, validateAccommodation, catchAsync(async (req, res) => {
   // if (!req.body.accommodation) throw new ExpressError('Invalid Accommodation Data', 400);   
   const newAccommodation = new Accommodation(req.body.accommodation);
+  // Associate currently logged in user with accommodation being created
+  newAccommodation.author = req.user._id;
   await newAccommodation.save();
   req.flash('success', 'Successfully created an accommodation!');
   res.redirect(`/accommodations/${newAccommodation._id}`);
@@ -41,7 +43,8 @@ router.post('/', isLoggedIn, validateAccommodation, catchAsync(async (req, res) 
 
 // Details for one specific accommodation
 router.get('/:id', catchAsync(async (req, res) => {
-  const accommodation = await Accommodation.findById(req.params.id).populate('reviews');
+  const accommodation = await Accommodation.findById(req.params.id).populate('reviews').populate('author');
+  // console.log(accommodation);
   if (!accommodation) {
     req.flash('error', 'Cannot find that accommodation!');
     return res.redirect('/accommodations');
