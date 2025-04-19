@@ -1,21 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
-const { accommodationSchema } = require("../joiSchemas.js");
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn, validateAccommodation, isAuthor } = require("../middleware");
 
-const ExpressError = require("../utils/ExpressError");
 const Accommodation = require("../models/accommodation");
-
-const validateAccommodation = (req, res, next) => {
-  const { error } = accommodationSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map(el => el.message).join(',');
-    throw new ExpressError(msg, 400 )
-  } else {
-    next();
-  }
-}
 
 // Display all accommodations
 router.get('/', catchAsync(async (req, res) => {
@@ -54,8 +42,9 @@ router.get('/:id', catchAsync(async (req, res) => {
 
 // ********* BELOW 2 ROUTES WORK TOGETHER
 // Form to edit specific accommodation
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
-  const accommodation = await Accommodation.findById(req.params.id);
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const accommodation = await Accommodation.findById(id);
   if (!accommodation) {
     req.flash('error', 'Cannot find that accommodation!');
     return res.redirect('/accommodations');
@@ -64,7 +53,7 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
 }))
 
 // Updates specific accommodation on server
-router.put('/:id', isLoggedIn, validateAccommodation, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateAccommodation, catchAsync(async (req, res) => {
   const { id } = req.params;
   const updatedAccommodation = await Accommodation.findByIdAndUpdate(id, { ...req.body.accommodation });
   req.flash('success', 'Successfully updated accommodation!');
@@ -73,7 +62,7 @@ router.put('/:id', isLoggedIn, validateAccommodation, catchAsync(async (req, res
 // ********* ABOVE 2 ROUTES WORK TOGETHER
 
 // Deletes specific accommodation on server
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
   const { id } = req.params;
   await Accommodation.findByIdAndDelete(id);
   req.flash('success', 'Successfully deleted accommodation!');
