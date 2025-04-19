@@ -1,20 +1,9 @@
 const express = require("express");
 const router = express.Router({mergeParams: true});
+const { validateReview } = require("../middleware");
 const catchAsync = require("../utils/catchAsync");
-const { reviewSchema } = require("../joiSchemas.js");
-const ExpressError = require("../utils/ExpressError");
 const Accommodation = require("../models/accommodation");
 const Review = require("../models/review");
-
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map(el => el.message).join(',');
-    throw new ExpressError(msg, 400 )
-  } else {
-    next();
-  }
-}
 
 // Creates new review on server
 router.post('/', validateReview, catchAsync(async (req, res) => {
