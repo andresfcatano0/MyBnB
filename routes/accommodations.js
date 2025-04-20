@@ -31,7 +31,14 @@ router.post('/', isLoggedIn, validateAccommodation, catchAsync(async (req, res) 
 
 // Details for one specific accommodation
 router.get('/:id', catchAsync(async (req, res) => {
-  const accommodation = await Accommodation.findById(req.params.id).populate('reviews').populate('author');
+  const accommodation = await Accommodation.findById(req.params.id).populate({
+    path: 'reviews',
+    populate: {
+      path: 'author'
+    }
+    // Populate author for reviews is above
+    // Populate author for accommodations is below
+  }).populate('author');
   // console.log(accommodation);
   if (!accommodation) {
     req.flash('error', 'Cannot find that accommodation!');
