@@ -9,6 +9,8 @@ const Review = require("../models/review");
 router.post('/', validateReview, catchAsync(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id);
   const review = new Review(req.body.review);
+    // Associate currently logged in user with review being created
+    review.author = req.user._id;
   // Push onto accommodation model reviews 
   accommodation.reviews.push(review);
   await review.save();
