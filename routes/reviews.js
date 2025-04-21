@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router({mergeParams: true});
-const { validateReview } = require("../middleware");
+const { validateReview, isLoggedIn, isReviewAuthor } = require("../middleware");
 const catchAsync = require("../utils/catchAsync");
 const Accommodation = require("../models/accommodation");
 const Review = require("../models/review");
 
 // Creates new review on server
-router.post('/', validateReview, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id);
   const review = new Review(req.body.review);
     // Associate currently logged in user with review being created
@@ -19,7 +19,7 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
   res.redirect(`/accommodations/${accommodation._id}`);
 }))
 
-router.delete('/:reviewId', catchAsync(async (req, res) => {
+router.delete('/:reviewId', isLoggedIn, isReviewAuthor, catchAsync(async (req, res) => {
   const { id, reviewId } = req.params;
   // $pull - mongo operator to remove reference to specific review from an accommodation
   await Accommodation.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
